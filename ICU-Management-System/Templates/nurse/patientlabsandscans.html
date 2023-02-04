@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;700&display=swap" rel="stylesheet">
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='/css/nurse.css') }}">
+    <title>Patient labs and scans</title>
+</head>
+<body>
+{% include 'nurse/sidebar.html' %}
+{% block content %}
+<div class="main-container m-5">
+<h1 class="text-primary">Laboratory</h1>
+<hr class="mb-4">
+<div class="accordion " id="accordionPanelsStayOpenExample">
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
+                aria-controls="panelsStayOpen-collapseOne">
+                    <b>Existing</b>
+                </button>
+            </h2>
+            <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show"
+            aria-labelledby="panelsStayOpen-headingOne">
+            <div class="accordion-body">
+                <div class="table_wrapper">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>File</th>
+                        <th>Type</th>
+                        <th>Date and Time Issued</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for checked in checkedlabs %}
+                    <tr>
+                        <td><a href="http://127.0.0.1:5000/patientlabsandscans/{{ checked[0] }}">{{ checked[0] }}</a></td>
+                        <!-- <td> {{checked[1]}}</td> -->
+                        <td> {{checked[2]}}</td>
+                        <td> {{checked[3]}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    </table>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
+                aria-controls="panelsStayOpen-collapseTwo">
+                <b>Pending</b>
+            </button>
+        </h2>
+        <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse"
+        aria-labelledby="panelsStayOpen-headingTwo">
+        <div class="accordion-body">
+            <div class="table_wrapper">
+                <form  method="post" enctype="multipart/form-data">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Type</th>
+                        <th>Date and Time Issued</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    { % for pending in pendinglabs % }
+                    <tr>
+                        <td>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="customCheck1">
+                                <label class="custom-control-label" for="customCheck1">1</label>
+                            </div>
+                        </td>
+                        { % for checks in pending %}
+                        <td> { { checks } }</td>
+                        { % endfor % }
+                    </tr>
+                    { % endfor % }
+                </tbody>
+            </table>
+            <div class="text-center"><input type="submit" name="pendingimagingrequests" value="Mark as done"
+                    class="btn btn-outline-primary">
+                </div>
+                </form>
+            </div>
+            </div>
+            </div>
+        </div>
+    </div>
+    <!-- <button onclick="showLabForm()" id="addlabbutton" class="btn btn-primary m-3">Upload Existing Lab</button> -->
+    <button  id="reqlab" class="btn btn-primary m-3" data-bs-toggle="modal" data-bs-target="#exampleModal">Upload Existing Lab</button>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Upload Existing Lab</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/patientlabsandscans" method="POST" name="uploadlab" enctype="multipart/form-data">
+                    <input type="radio" name="lab" value="Complete blood count" > Complete blood count <br>
+                    <input type="radio" name="lab" value="Basic metabolic panel" > Basic metabolic panel <br>
+                    <input type="radio" name="lab" value="Comprehensive metabolic panel" > Comprehensive metabolic panel <br>
+                    <input type="radio" name="lab" value="Lipid panel" > Lipid panel <br>
+                    <input type="radio" name="lab" value="Thyroid panel" > Thyroid panel <br>
+                    <input type="radio" name="lab" value="Cardiac biomarkers" > Cardiac biomarkers <br>
+                    <input type="radio" name="lab" value="Coagulation panel" > Coagulation panel <br>
+                    <input type="radio" name="lab" value="C-reactive protein test" > C-reactive protein test <br><br>
+                    <label for="Book Lab Test">Choose date and time: <br>
+                        <input type="datetime-local" name="dataissued"  >
+                    </label>
+                    <div class="input-group my-3 ">
+                    <input type="file" class="form-control" id="inputGroupFile02" name="existinglab">
+                    <!-- <input type="submit" class="btn btn-outline-primary" name="addexistinglab" value="Add"> -->
+                </div>
+                </div>
+                {% with messeges =get_flashed_messages() %}
+                {% if messeges %}
+                {%for messege in messeges%}
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <i class='bx bx-error-circle'></i>
+                    {{messege}}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <input type="submit" value="Upload" name="uploadlab" class="btn btn-primary">
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+    <!-- <form action="/patientlabsandscans" method="POST" id="addlabform" style="display: none;" class="m-3">
+        
+    </form> -->
+    <h1 class="text-primary">Imaging</h1>
+    <hr class="mb-4">
+    <div class="accordion " id="accordionPanelsStayOpenExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="panelsStayOpen-headingThree">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="true"
+                aria-controls="panelsStayOpen-collapseThree">
+                <b>Existing</b>
+            </button>
+        </h2>
+        <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse show"
+        aria-labelledby="panelsStayOpen-headingThree">
+        <div class="accordion-body">
+            <div class="table_wrapper">
+            <table class="table table-hover ">
+                <thead>
+                    <tr>
+                        <th>File</th>
+                        <th>Type</th>
+                        <th>Date and TimeIssued</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for checked in checkedimaging %}
+                    <tr>
+                    <td><a href="http://127.0.0.1:5000/patientlabsandscans/{{checked[0]}}">{{ checked[0] }}</a></td>
+                    <!-- <td> {{checked[1]}}</td> -->
+                    <td> {{checked[2]}}</td>
+                    <td> {{checked[3]}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        </div>
+    </div>
+</div>
+<div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingFour">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#panelsStayOpen-collapseFour" aria-expanded="false"
+                        aria-controls="panelsStayOpen-collapseFour">
+                        <b>Pending</b>
+                    </button>
+                </h2>
+                <div id="panelsStayOpen-collapseFour" class="accordion-collapse collapse"
+                aria-labelledby="panelsStayOpen-headingFour">
+                <div class="accordion-body">
+                    <div class="table_wrapper">
+                    <form action="/" method="post" >
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Type</th>
+                                <th>Recieved Date</th>
+                                <th>Time Issued</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            { % for pending in pendingimaging % }
+                            <tr>
+                                <td>
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="customCheck1">
+                                        <label class="custom-control-label" for="customCheck1">1</label>
+                                    </div>
+                                </td>
+                                { % for checks in pending %}
+                                <td> { { checks } }</td>
+                                { % endfor % }
+                            </tr>
+                            { % endfor % }
+                        </tbody>
+                    </table>
+                    <div class="text-center"><input type="submit" name="pendingimagingrequests" value="Mark as done" class="btn btn-outline-primary"></div>
+                </form>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        <!-- <button onclick="showImagingForm()" id="addimg" class="btn btn-primary m-3">Upload Existing Imaging</button> -->
+        <button  id="reqimg" class="btn btn-primary m-3" data-bs-toggle="modal" data-bs-target="#exampleModal2">Upload Existing Imaging</button>
+        <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Upload Existing Imaging</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/patientlabsandscans" method="post" name="uploadimaging" enctype="multipart/form-data">
+                            <input type="radio" name="Imaging" value="CT-Scan" > CT-Scan<br>
+                            <input type="radio" name="Imaging" value="MRI" > MRI<br>
+                            <input type="radio" name="Imaging" value="PET Scan" > PET Scan<br>
+                            <input type="radio" name="Imaging" value="Ultrasound" > Ultrasound<br>
+                            <input type="radio" name="Imaging" value="X-Ray" > X-Ray</label><br>
+                            <input type="radio" name="Imaging" value="Sonar" > Sonar<br>
+                            <input type="radio" name="Imaging" value="Angiography" > Angiography<br>
+                            <input type="radio" name="Imaging" value="ECG" > ECG<br><br>
+                            <label for="Book Lab Test">Choose date and time: <br>
+                                <input type="datetime-local" name="dataissued"  >
+                            </label>
+                            <div class="input-group my-3 ">
+                            <input type="file" class="form-control" id="inputGroupFile02" name="existingimaging">
+                        </div>
+                    </div>
+                    {% with messeges =get_flashed_messages() %}
+                    {% if messeges %}
+                    {%for messege in messeges%}
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <i class='bx bx-error-circle'></i>
+                        {{messege}}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </button>
+                </div>
+                {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <input type="submit" value="Upload" name="uploadimaging" class="btn btn-primary">
+                    </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+</body>
+</html>

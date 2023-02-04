@@ -1,0 +1,27 @@
+body {
+  font-family: "Poppins", sans-serif;
+}
+.row-bordered {
+    position: relative;
+  }
+  
+  .row-bordered:after {
+    content: "";
+    display: block;
+    border-bottom: 1px solid #ccc;
+    position: absolute;
+    bottom: 0;
+    left: 15px;
+    right: 15px;
+  }
+
+.table thead tr {
+    background-color:#0d6efd;
+    color: #ffffff;
+} 
+
+.table_wrapper{
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+  }

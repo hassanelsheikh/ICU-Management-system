@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='/css/managerecords.css') }}">
+  <link rel="preconnect" href="https:/fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
+  <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <title>Manage Record</title>
+</head>
+
+<body>
+  {%include 'receptionist/navbar.html'%}
+  {%block content%}
+  {%if data%}
+  <div class="main-container m-5">
+
+    <div class="row row-bordered">
+      <h1 class="font-weight-bold text-primary">Manage Records</h1>
+    </div>
+    <div class="d-flex justify-content-between mt-5">
+      <a type="button" class="btn btn-primary border border-primary mx-1" href="http://127.0.0.1:5000/receptionist_addrecord">
+        <i class="fa-solid fa-user-plus p-1"></i>
+        Add New Record</a>
+      <form class="form-inline" action="http://127.0.0.1:5000/receptionist_managerecords" method="POST">
+        <div class="d-flex" style="width: 400px;">
+          <input class="form-control mr-sm-2 border-primary" type="search" name="ReportID" placeholder="Search by Report ID" aria-label="Search"
+            v-model="search" />
+          <button class="btn btn-primary my-2 my-sm-0 mx-3 fw-bold border" type="submit" @click.prevent="searchData()">
+            Search
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="row justify-content-center mt-3">
+      <table class="table table-hover table-responsive" style="width:98%">
+        <thead>
+          <tr>
+            <th scope="col">Record ID</th>
+            <th scope="col">First Name</th>
+            <th scope="col">Last Name</th>
+            <th scope="col">Date admitted</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for info in data.recordinfo %}
+          <tr data-href="http://127.0.0.1:5000/receptionist_viewrecord">
+            {% for details in info %}
+            <td> {{details}} </td>
+            {% endfor %}
+            <td>
+              <a type="button" class="btn btn-outline-primary border border-primary" href="http://127.0.0.1:5000/receptionist_editrecord/1">
+                <i class="fa-solid fa-user-pen"></i>
+              </a>
+            </td>
+            {% endfor %}
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+  {% endblock %}
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const rows = document.querySelectorAll("tr[data-href]");
+      rows.forEach(row => {
+        row.addEventListener("click", () => {
+          window.location.href = row.dataset.href;
+        })
+      })
+    })
+  </script>
+</body>
+
+</html>
